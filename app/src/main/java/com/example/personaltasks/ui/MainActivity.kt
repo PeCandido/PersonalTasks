@@ -1,6 +1,7 @@
 package com.example.personaltasks.ui
 
 import android.os.Bundle
+import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -49,4 +50,11 @@ class MainActivity : AppCompatActivity() {
             taskAdapter.updateTasks(tasks)
         }
     }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+    
+
 }

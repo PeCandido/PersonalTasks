@@ -4,9 +4,11 @@ import android.app.DatePickerDialog
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.personaltasks.data.AppDatabase
+import com.example.personaltasks.model.Task
 import com.exemplo.personaltasks.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -47,6 +49,39 @@ class TaskFormActivity : AppCompatActivity() {
 
         dateEdit.setOnClickListener {
             showDatePicker()
+        }
+
+        saveButton.setOnClickListener {
+            saveTask()
+        }
+    }
+
+    private fun saveTask() {
+        val title = titleEdit.text.toString()
+        val description = descriptionEdit.text.toString()
+        val deadline = dateEdit.text.toString()
+
+        if (title.isBlank() || description.isBlank() || deadline.isBlank()) {
+            Toast.makeText(this, "Fill all the fields", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val newTask = Task(
+            id = if (taskId != 0) taskId else 0,
+            title = title,
+            description = description,
+            deadline = deadline
+        )
+
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                if (taskId != 0) {
+                    db.taskDAO().update(newTask)
+                } else {
+                    db.taskDAO().insert(newTask)
+                }
+            }
+            finish()
         }
     }
 

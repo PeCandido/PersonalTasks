@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var taskAdapter: TaskAdapter
     private lateinit var db: AppDatabase
     private var tasks: List<Task> = listOf()
+    private var selectedTask: Task? = null
 
     private val taskDao by lazy {
         AppDatabase.getDatabase(this).taskDAO()
@@ -31,10 +32,13 @@ class MainActivity : AppCompatActivity() {
 
         recyclerView = findViewById(R.id.rv_taks)
 
+        registerForContextMenu(recyclerView)
+
         db = AppDatabase.getDatabase(this)
 
-        taskAdapter = TaskAdapter(tasks) {
-            view, task ->
+        taskAdapter = TaskAdapter(tasks) { view, task ->
+            selectedTask = task
+            view.showContextMenu()
         }
 
         recyclerView.adapter = taskAdapter
@@ -75,5 +79,16 @@ class MainActivity : AppCompatActivity() {
         }
         startActivity(intent)
     }
+
+    private fun deleteTask(task: Task) {
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                db.taskDAO().delete(task)
+            }
+
+            loadTasks()
+        }
+    }
+
 
 }

@@ -69,6 +69,10 @@ class TaskFormActivity : AppCompatActivity() {
         saveButton.setOnClickListener {
             saveTask()
         }
+
+        cancelButton.setOnClickListener {
+            finish()
+        }
     }
 
     private fun saveTask() {

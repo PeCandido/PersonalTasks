@@ -117,4 +117,9 @@ class MainActivity : AppCompatActivity() {
             else -> super.onContextItemSelected(item)
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        loadTasks()
+    }
 }

@@ -2,11 +2,15 @@ package com.example.personaltasks.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.personaltasks.adapter.TaskAdapter
 import com.example.personaltasks.data.AppDatabase
 import com.example.personaltasks.model.Task
 import com.exemplo.personaltasks.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
@@ -31,5 +35,18 @@ class MainActivity : AppCompatActivity() {
         }
 
         recyclerView.adapter = taskAdapter
+
+        loadTasks()
+    }
+
+    private fun loadTasks() {
+        lifecycleScope.launch {
+            val taskList = withContext(Dispatchers.IO) {
+                db.taskDAO().findAll()
+            }
+
+            tasks = taskList
+            taskAdapter.updateTasks(tasks)
+        }
     }
 }

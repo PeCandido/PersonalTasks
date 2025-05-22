@@ -90,5 +90,26 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.edit_task -> {
+                selectedTask?.let { openFormActivity(it) }
+                true
+            }
+
+            R.id.remove_task -> {
+                selectedTask?.let { deleteTask(it) }
+                true
+            }
+
+            R.id.detail_task -> {
+                selectedTask?.let { openFormActivity(it) } // mesmo formulário, modo leitura depois
+                true
+            }
+
+            else -> super.onContextItemSelected(item)
+        }
+    }
+
 
 }

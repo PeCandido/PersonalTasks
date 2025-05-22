@@ -1,15 +1,18 @@
-package com.example.personaltasks
+package com.example.personaltasks.ui
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import com.example.personaltasks.R
+import com.example.personaltasks.data.AppDatabase
 
 class MainActivity : AppCompatActivity() {
+
+    private val taskDao by lazy {
+        AppDatabase.getDatabase(this).taskDAO()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
     }
 }

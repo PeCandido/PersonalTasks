@@ -8,7 +8,7 @@
     card_view:cardElevation="4dp">
 
         <TextView
-            android:id="@+id/task_tittle"
+            android:id="@+id/task_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Título da Tarefa"
@@ -26,7 +26,7 @@
             android:textSize="14sp"
             android:textColor="#444444"
             android:layout_marginTop="4dp"
-            card_view:layout_constraintTop_toBottomOf="@id/task_tittle"
+            card_view:layout_constraintTop_toBottomOf="@id/task_title"
             card_view:layout_constraintBottom_toTopOf="@id/task_date"/>
 
         <TextView

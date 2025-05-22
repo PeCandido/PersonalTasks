@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.personaltasks"
+    namespace = "com.exemplo.personaltasks"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.personaltasks"
+        applicationId = "com.exemplo.personaltasks"
         minSdk = 26
         targetSdk = 35
         versionCode = 1
@@ -27,7 +27,6 @@ android {
             )
         }
     }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -35,9 +34,16 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    viewBinding {
+        enable = true
+    }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

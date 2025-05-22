@@ -2,8 +2,8 @@ package com.example.personaltasks.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.personaltasks.R
 import com.example.personaltasks.data.AppDatabase
+import com.exemplo.personaltasks.R
 
 class MainActivity : AppCompatActivity() {
 

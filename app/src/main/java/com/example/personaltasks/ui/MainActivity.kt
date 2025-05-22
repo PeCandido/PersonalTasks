@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.personaltasks.adapter.TaskAdapter
 import com.example.personaltasks.data.AppDatabase
 import com.example.personaltasks.model.Task
-import com.exemplo.personaltasks.R
-import com.exemplo.personaltasks.databinding.ActivityMainBinding
+import com.example.personaltasks.R
+import com.example.personaltasks.databinding.ActivityMainBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -50,10 +50,6 @@ class MainActivity : AppCompatActivity() {
         loadTasks()
     }
 
-    private fun setSupportActionBar(toolbar: Int) {
-
-    }
-
     private fun loadTasks() {
         lifecycleScope.launch {
             val taskList = withContext(Dispatchers.IO) {
@@ -72,7 +68,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.edit_task -> {
+            R.id.new_task -> {
                 openFormActivity(null)
                 true
             }
@@ -82,6 +78,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun openFormActivity(task: Task? = null, isReadOnly: Boolean = false) {
         val intent = Intent(this, TaskFormActivity::class.java)
+
         task?.let {
             intent.putExtra("task_id", it.id)
         }

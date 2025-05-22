@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.exemplo.personaltasks"
+    namespace = "com.example.personaltasks"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.exemplo.personaltasks"
+        applicationId = "com.example.personaltasks"
         minSdk = 26
         targetSdk = 35
         versionCode = 1

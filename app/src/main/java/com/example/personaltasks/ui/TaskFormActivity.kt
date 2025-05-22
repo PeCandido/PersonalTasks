@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.personaltasks.data.AppDatabase
 import com.example.personaltasks.model.Task
-import com.exemplo.personaltasks.R
+import com.example.personaltasks.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -32,11 +32,22 @@ class TaskFormActivity : AppCompatActivity() {
     private lateinit var db: AppDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_task)
+
+        titleEdit = findViewById(R.id.edit_title)
+        descriptionEdit = findViewById(R.id.edit_description)
+        dateEdit = findViewById(R.id.edit_deadline)
+        saveButton = findViewById(R.id.save_btn)
+        cancelButton = findViewById(R.id.cancel_btn)
+
+        db = AppDatabase.getDatabase(this)
+
         isReadOnly = intent.getBooleanExtra("read_only", false)
 
         if (isReadOnly) {
             saveButton.visibility = View.GONE
-            cancelButton.text = "Voltar"
+            cancelButton.text = "Cancel"
 
             titleEdit.isEnabled = false
             descriptionEdit.isEnabled = false
@@ -44,17 +55,6 @@ class TaskFormActivity : AppCompatActivity() {
 
             dateEdit.setOnClickListener { showDatePicker() }
         }
-
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_task)
-
-        titleEdit = findViewById(R.id.edit_title)
-        descriptionEdit = findViewById(R.id.edit_description)
-        dateEdit = findViewById(R.id.edit_limit_date)
-        saveButton = findViewById(R.id.clear_btn)
-        cancelButton = findViewById(R.id.save_btn)
-
-        db = AppDatabase.getDatabase(this)
 
         taskId = intent.getIntExtra("task_id", 0)
 

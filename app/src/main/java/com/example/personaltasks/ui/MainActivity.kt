@@ -11,6 +11,7 @@ import com.example.personaltasks.adapter.TaskAdapter
 import com.example.personaltasks.data.AppDatabase
 import com.example.personaltasks.model.Task
 import com.exemplo.personaltasks.R
+import com.exemplo.personaltasks.databinding.ActivityMainBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -30,6 +31,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
         recyclerView = findViewById(R.id.rv_taks)
 
         registerForContextMenu(recyclerView)
@@ -44,6 +48,10 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = taskAdapter
 
         loadTasks()
+    }
+
+    private fun setSupportActionBar(toolbar: Int) {
+
     }
 
     private fun loadTasks() {
@@ -72,11 +80,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun openFormActivity(task: Task?) {
+    private fun openFormActivity(task: Task? = null, isReadOnly: Boolean = false) {
         val intent = Intent(this, TaskFormActivity::class.java)
-        if (task != null) {
-            intent.putExtra("task_id", task.id)
+        task?.let {
+            intent.putExtra("task_id", it.id)
         }
+
+        intent.putExtra("read_only", isReadOnly)
         startActivity(intent)
     }
 
@@ -103,13 +113,11 @@ class MainActivity : AppCompatActivity() {
             }
 
             R.id.detail_task -> {
-                selectedTask?.let { openFormActivity(it) } // mesmo formulário, modo leitura depois
+                selectedTask?.let { openFormActivity(it, isReadOnly = true) }
                 true
             }
 
             else -> super.onContextItemSelected(item)
         }
     }
-
-
 }

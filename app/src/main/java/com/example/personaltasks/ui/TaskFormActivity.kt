@@ -2,6 +2,7 @@ package com.example.personaltasks.ui
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -25,11 +26,25 @@ class TaskFormActivity : AppCompatActivity() {
     private lateinit var cancelButton: Button
 
     private var taskId: Int = 0
+    private var isReadOnly: Boolean = false
     private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     private val calendar = Calendar.getInstance()
     private lateinit var db: AppDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        isReadOnly = intent.getBooleanExtra("read_only", false)
+
+        if (isReadOnly) {
+            saveButton.visibility = View.GONE
+            cancelButton.text = "Voltar"
+
+            titleEdit.isEnabled = false
+            descriptionEdit.isEnabled = false
+            dateEdit.isEnabled = false
+
+            dateEdit.setOnClickListener { showDatePicker() }
+        }
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_task)
 

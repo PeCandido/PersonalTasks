@@ -33,7 +33,7 @@
             android:id="@+id/task_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Data limite: 20/05/2025"
+            android:text="Deadline: 21/05/2025"
             android:textSize="12sp"
             android:textColor="#888888"
             android:layout_marginTop="6dp"

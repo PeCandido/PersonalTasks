@@ -1,7 +1,9 @@
 package com.example.personaltasks.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -55,6 +57,23 @@ class MainActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
-    
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.edit_task -> {
+                openFormActivity(null)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun openFormActivity(task: Task?) {
+        val intent = Intent(this, TaskFormActivity::class.java)
+        if (task != null) {
+            intent.putExtra("task_id", task.id)
+        }
+        startActivity(intent)
+    }
 
 }

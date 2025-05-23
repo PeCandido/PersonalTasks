@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Personal Tasks</string>
+    <string name="edit_task">Edit Task</string>
+    <string name="enter_the_title">Enter the title</string>
+    <string name="enter_the_description">Enter the description</string>
+    <string name="pick_a_date">Pick a date</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="task_title">Task title</string>
+    <string name="task_description">Task description</string>
+    <string name="deadline_21_05_2025">Deadline: 21/05/2025</string>
+    <string name="remove_task">Remove Task</string>
+    <string name="details">Details</string>
+    <string name="new_task">New Task</string>
 </resources>

@@ -54,6 +54,9 @@ class TaskFormActivity : AppCompatActivity() {
         // Inicializa a instância do banco de dados
         db = AppDatabase.getDatabase(this)
 
+        // Desabilita o teclado na edição da data
+        dateEdit.setKeyListener(null)
+
         // Recupera se a tela deve ser exibida como somente leitura (detalhamento da tarefa)
         isReadOnly = intent.getBooleanExtra("read_only", false)
 

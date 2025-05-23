@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         recyclerView = findViewById(R.id.rv_tasks)
-
+        recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         registerForContextMenu(recyclerView)
 
         db = AppDatabase.getDatabase(this)

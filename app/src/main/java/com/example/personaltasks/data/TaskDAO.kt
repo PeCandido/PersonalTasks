@@ -10,17 +10,17 @@ import com.example.personaltasks.model.Task
 @Dao
 interface TaskDAO {
     @Insert
-    fun insert(task: Task)
+    suspend fun insert(task: Task)
 
     @Update
-    fun update(task: Task)
+    suspend fun update(task: Task)
 
     @Delete
-    fun delete(task: Task)
+    suspend fun delete(task: Task)
 
     @Query("SELECT * from tasks WHERE id = :taskId")
-    fun findById(taskId: Int): Task?
+    suspend fun findById(taskId: Int): Task?
 
     @Query("SELECT * from tasks")
-    fun findAll(): List<Task>
+    suspend fun findAll(): List<Task>
 }

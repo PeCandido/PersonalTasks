@@ -11,7 +11,6 @@ import com.example.personaltasks.adapter.TaskAdapter
 import com.example.personaltasks.data.AppDatabase
 import com.example.personaltasks.model.Task
 import com.example.personaltasks.R
-import com.example.personaltasks.databinding.ActivityMainBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -34,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        recyclerView = findViewById(R.id.rv_taks)
+        recyclerView = findViewById(R.id.rv_tasks)
 
         registerForContextMenu(recyclerView)
 

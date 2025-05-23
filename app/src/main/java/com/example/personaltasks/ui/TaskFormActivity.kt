@@ -76,6 +76,7 @@ class TaskFormActivity : AppCompatActivity() {
     }
 
     private fun saveTask() {
+        Toast.makeText(this, "Salvando tarefa...", Toast.LENGTH_SHORT).show()
         val title = titleEdit.text.toString()
         val description = descriptionEdit.text.toString()
         val deadline = dateEdit.text.toString()
@@ -85,20 +86,23 @@ class TaskFormActivity : AppCompatActivity() {
             return
         }
 
-        val newTask = Task(
-            id = if (taskId != 0) taskId else 0,
+        val newTask = if (taskId != 0) { Task(
+            id = taskId,
             title = title,
             description = description,
-            deadline = deadline
-        )
+            deadline = deadline)
+        } else {
+            Task(
+                title = title,
+                description = description,
+                deadline = deadline)
+        }
 
         lifecycleScope.launch {
-            withContext(Dispatchers.IO) {
-                if (taskId != 0) {
-                    db.taskDAO().update(newTask)
-                } else {
-                    db.taskDAO().insert(newTask)
-                }
+            if (taskId != 0) {
+                db.taskDAO().update(newTask)
+            } else {
+                db.taskDAO().insert(newTask)
             }
             finish()
         }

@@ -19,6 +19,11 @@ class TaskAdapter(
             binding.taskTitle.text = task.title
             binding.taskDescription.text = task.description
             binding.taskDate.text = "Deadline: ${task.deadline}"
+
+            binding.root.setOnLongClickListener {
+                onLongClick(it, task)
+                true
+            }
         }
     }
 

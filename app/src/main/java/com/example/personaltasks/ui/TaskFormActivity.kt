@@ -114,14 +114,18 @@ class TaskFormActivity : AppCompatActivity() {
             dateEdit.setText(dateFormat.format(calendar.time))
         }
 
-        DatePickerDialog(
+        val dialog = DatePickerDialog(
             this,
             dateSetListener,
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
-        ).show()
+        )
+        dialog.datePicker.minDate = System.currentTimeMillis()
+        dialog.show()
     }
+
+
 
     private fun loadTask() {
         lifecycleScope.launch {

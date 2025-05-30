@@ -181,6 +181,7 @@ class TaskFormActivity : AppCompatActivity() {
             }
 
             // Se a tarefa existir, preenche os campos com seus dados
+            // Preenche se a tarefa está concluída ou não
             task?.let {
                 titleEdit.setText(it.title)
                 descriptionEdit.setText(it.description)

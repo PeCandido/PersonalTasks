@@ -1,5 +1,6 @@
 package com.example.personaltasks.adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +23,8 @@ class TaskAdapter(
             binding.taskTitle.text = task.title // Define o título da tarefa
             binding.taskDescription.text = task.description // Define a descrição da tarefa
             binding.taskDate.text = "Deadline: ${task.deadline}" // Define a data limite da tarefa
+            binding.isDone.isChecked = task.isDone
+            binding.isDone.isClickable = false
 
             // Define o que acontece ao clicar e segurar uma tarefa
             binding.root.setOnLongClickListener {

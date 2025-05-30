@@ -59,6 +59,13 @@
             android:inputType="date"
             android:hint="@string/pick_a_date" />
 
+        <CheckBox
+            android:id="@+id/isDone_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:text="Done" />
+
         <LinearLayout
             style="?android:attr/buttonBarStyle"
             android:layout_width="match_parent"

@@ -40,4 +40,11 @@
             card_view:layout_constraintTop_toBottomOf="@id/task_description"
             card_view:layout_constraintBottom_toTopOf="parent"/>
 
+        <CheckBox
+            android:id="@+id/is_done"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Task is done"
+            card_view:layout_constraintTop_toBottomOf="@id/task_date" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,9 +1,11 @@
 package com.example.personaltasks.ui
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -27,6 +29,7 @@ class TaskFormActivity : AppCompatActivity() {
     private lateinit var dateEdit: EditText
     private lateinit var saveButton: Button
     private lateinit var cancelButton: Button
+    private lateinit var isDoneCB: CheckBox
 
     // Armazena o ID da tarefa, se for uma edição
     private var taskId: Int = 0
@@ -39,6 +42,7 @@ class TaskFormActivity : AppCompatActivity() {
     // Instância do banco de dados
     private lateinit var db: AppDatabase
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Define o layout da tela
@@ -50,6 +54,7 @@ class TaskFormActivity : AppCompatActivity() {
         dateEdit = findViewById(R.id.edit_deadline)
         saveButton = findViewById(R.id.save_btn)
         cancelButton = findViewById(R.id.cancel_btn)
+        isDoneCB = findViewById(R.id.isDone_checkbox)
 
         // Inicializa a instância do banco de dados
         db = AppDatabase.getDatabase(this)
@@ -69,6 +74,7 @@ class TaskFormActivity : AppCompatActivity() {
             titleEdit.isEnabled = false
             descriptionEdit.isEnabled = false
             dateEdit.isEnabled = false
+            isDoneCB.isEnabled = false
 
             // Ainda permite exibir o DatePicker, se necessário
             dateEdit.setOnClickListener { showDatePicker() }
@@ -104,6 +110,7 @@ class TaskFormActivity : AppCompatActivity() {
         val title = titleEdit.text.toString()
         val description = descriptionEdit.text.toString()
         val deadline = dateEdit.text.toString()
+        var isTaskDone = isDoneCB.isChecked
 
         // Valida se todos os campos foram preenchidos
         if (title.isBlank() || description.isBlank() || deadline.isBlank()) {
@@ -121,13 +128,15 @@ class TaskFormActivity : AppCompatActivity() {
                 id = taskId,
                 title = title,
                 description = description,
-                deadline = deadline
+                deadline = deadline,
+                isDone = isTaskDone
             )
         } else {
             Task(
                 title = title,
                 description = description,
-                deadline = deadline
+                deadline = deadline,
+                isDone = isTaskDone
             )
         }
 
@@ -176,6 +185,7 @@ class TaskFormActivity : AppCompatActivity() {
                 titleEdit.setText(it.title)
                 descriptionEdit.setText(it.description)
                 dateEdit.setText(it.deadline)
+                isDoneCB.isChecked = it.isDone
             }
         }
     }

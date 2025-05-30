@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.example.personaltasks.model.Task
 
 // Instanciação do banco de dados
-@Database(entities = [Task::class], version = 1, exportSchema = false)
+@Database(entities = [Task::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     // chamada do DAO
@@ -22,10 +22,10 @@ abstract class AppDatabase : RoomDatabase() {
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    AppDatabase::class.java,
-                    "personal_tasks_db"
-                ).build()
+                                context.applicationContext,
+                                AppDatabase::class.java,
+                                "personal_tasks_db"
+                            ).fallbackToDestructiveMigration(true).build()
                 INSTANCE = instance
                 instance
             }

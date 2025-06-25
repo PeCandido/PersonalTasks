@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.personaltasks.R
 import com.google.firebase.auth.FirebaseAuth
@@ -39,6 +40,26 @@ class LoginActivity: AppCompatActivity() {
     }
 
     private fun performLogin() {
+        val email = emailEdit.text.toString().trim()
+        val password = passwordEdit.text.toString().trim()
+
+        if (email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "Fill all the fields", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this) { task ->
+            if(task.isSuccessful){
+                Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
+
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else {
+                val errorMessage = task.exception?.message ?: "Error"
+                Toast.makeText(this, "Failure to login: $errorMessage", Toast.LENGTH_LONG).show()
+            }
+        }
 
     }
 

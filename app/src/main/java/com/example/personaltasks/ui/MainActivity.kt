@@ -14,6 +14,7 @@ import com.example.personaltasks.data.AppDatabase
 import com.example.personaltasks.model.Task
 import com.example.personaltasks.R
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -88,6 +89,15 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.new_task -> {
                 openFormActivity(null) // Abre formulário para nova tarefa
+                true
+            }
+
+            R.id.action_logout -> {
+                FirebaseAuth.getInstance().signOut()
+                val intent = Intent(this, LoginActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                finish()
                 true
             }
             else -> super.onOptionsItemSelected(item)

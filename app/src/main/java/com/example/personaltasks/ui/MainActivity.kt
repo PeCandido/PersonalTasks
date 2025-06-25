@@ -13,6 +13,7 @@ import com.example.personaltasks.adapter.TaskAdapter
 import com.example.personaltasks.data.AppDatabase
 import com.example.personaltasks.model.Task
 import com.example.personaltasks.R
+import com.google.firebase.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

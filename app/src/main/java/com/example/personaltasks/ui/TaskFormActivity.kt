@@ -175,18 +175,15 @@ class TaskFormActivity : AppCompatActivity() {
 
     // Carrega a tarefa do banco com base no ID recebido
     private fun loadTask() {
-        lifecycleScope.launch {
-            val task = withContext(Dispatchers.IO) {
-                db.taskDAO().findById(taskId)
-            }
-
-            // Se a tarefa existir, preenche os campos com seus dados
-            // Preenche se a tarefa está concluída ou não
-            task?.let {
-                titleEdit.setText(it.title)
-                descriptionEdit.setText(it.description)
-                dateEdit.setText(it.deadline)
-                isDoneCB.isChecked = it.isDone
+        taskId?.let { id ->
+            tasksCollection.document(id).get().addOnSuccessListener { document ->
+                val task = document.toObject(Task::class.java)
+                task?.let {
+                    titleEdit.setText(it.title)
+                    descriptionEdit.setText(it.description)
+                    dateEdit.setText(it.deadline)
+                    isDoneCB.isChecked = it.isDone
+                }
             }
         }
     }

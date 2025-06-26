@@ -123,31 +123,35 @@ class TaskFormActivity : AppCompatActivity() {
         Toast.makeText(this, "Salvando tarefa...", Toast.LENGTH_SHORT).show()
 
         // Cria uma nova tarefa ou atualiza a existente
-        val newTask = if (taskId != 0) {
-            Task(
-                id = taskId,
-                title = title,
-                description = description,
-                deadline = deadline,
-                isDone = isTaskDone
-            )
-        } else {
-            Task(
-                title = title,
-                description = description,
-                deadline = deadline,
-                isDone = isTaskDone
-            )
-        }
+        val taskToSave = Task(
+            id = taskId, // Será nulo se for uma nova tarefa
+            userId = userId,
+            title = title,
+            description = description,
+            deadline = deadline,
+            isDone = isTaskDone,
+            isDeleted = false
+        )
 
-        // Executa a operação de banco de dados de forma assíncrona
-        lifecycleScope.launch {
-            if (taskId != 0) {
-                db.taskDAO().update(newTask) // Atualiza a tarefa existente
-            } else {
-                db.taskDAO().insert(newTask) // Insere uma nova tarefa
-            }
-            finish() // Fecha a activity após salvar
+        if (taskId == null) {
+            tasksCollection.add(taskToSave)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Created new task!", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+        } else {
+            tasksCollection.document(taskId!!)
+                .set(taskToSave)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Task has been updated!", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
         }
     }
 

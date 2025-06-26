@@ -1,6 +1,7 @@
 package com.example.personaltasks.ui
 
 import android.os.Bundle
+import android.widget.Toast
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -30,6 +31,7 @@ class DeletedTasksActivity: AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         setupRecyclerView()
+        fetchDeletedTasks()
     }
 
     private fun setupRecyclerView() {
@@ -43,5 +45,21 @@ class DeletedTasksActivity: AppCompatActivity() {
         recyclerView.adapter = deletedTaskAdapter
 
         registerForContextMenu(recyclerView)
+    }
+
+    private fun fetchDeletedTasks() {
+        val userId = auth.currentUser?.uid ?: return
+
+        tasksCollection
+            .whereEqualTo("userId", userId)
+            .whereEqualTo("deleted", true)
+            .get()
+            .addOnSuccessListener { documents ->
+                val taskList = documents.toObjects(Task::class.java)
+                deletedTaskAdapter.updateTasks(taskList)
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Error to fetch tasks: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 }

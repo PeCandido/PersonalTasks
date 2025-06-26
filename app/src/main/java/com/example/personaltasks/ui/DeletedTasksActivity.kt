@@ -1,5 +1,6 @@
 package com.example.personaltasks.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.ContextMenu
 import android.view.MenuItem
@@ -97,6 +98,10 @@ class DeletedTasksActivity: AppCompatActivity() {
     }
 
     private fun showTaskDetails(task: Task) {
-        TODO("Not yet implemented")
+        val intent = Intent(this, TaskFormActivity::class.java).apply {
+            putExtra("task_id", task.id)
+            putExtra("read_only", true)
+        }
+        startActivity(intent)
     }
 }

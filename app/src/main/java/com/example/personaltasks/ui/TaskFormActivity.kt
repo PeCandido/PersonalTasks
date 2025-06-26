@@ -10,9 +10,10 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.personaltasks.data.AppDatabase
 import com.example.personaltasks.model.Task
 import com.example.personaltasks.R
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -32,15 +33,17 @@ class TaskFormActivity : AppCompatActivity() {
     private lateinit var isDoneCB: CheckBox
 
     // Armazena o ID da tarefa, se for uma edição
-    private var taskId: Int = 0
+    private var taskId: String? = null
     // Indica se o formulário está em modo somente leitura (detalhamento da tarefa)
     private var isReadOnly: Boolean = false
     // Define o formato da data exibida no campo
     private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     // Instância de calendário usada no seletor de datas
     private val calendar = Calendar.getInstance()
-    // Instância do banco de dados
-    private lateinit var db: AppDatabase
+
+    private val firestore = FirebaseFirestore.getInstance()
+    private val auth = FirebaseAuth.getInstance()
+    private val tasksCollection = firestore.collection("tasks")
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,9 +58,6 @@ class TaskFormActivity : AppCompatActivity() {
         saveButton = findViewById(R.id.save_btn)
         cancelButton = findViewById(R.id.cancel_btn)
         isDoneCB = findViewById(R.id.isDone_checkbox)
-
-        // Inicializa a instância do banco de dados
-        db = AppDatabase.getDatabase(this)
 
         // Desabilita o teclado na edição da data
         dateEdit.setKeyListener(null)
@@ -81,10 +81,10 @@ class TaskFormActivity : AppCompatActivity() {
         }
 
         // Obtém o ID da tarefa passada via Intent (0 se for nova)
-        taskId = intent.getIntExtra("task_id", 0)
+        taskId = intent.getStringExtra("task_id")
 
         // Se for edição ou visualização, carrega os dados da tarefa do banco
-        if (taskId != 0) {
+        if (taskId != null) {
             loadTask()
         }
 

@@ -4,6 +4,7 @@ import android.os.Bundle
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.personaltasks.R
 import com.example.personaltasks.adapter.TaskAdapter
@@ -27,5 +28,20 @@ class DeletedTasksActivity: AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar_deleted)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        setupRecyclerView()
+    }
+
+    private fun setupRecyclerView() {
+        recyclerView = findViewById(R.id.rv_deleted_tasks)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
+        deletedTaskAdapter = TaskAdapter(mutableListOf()) { view, task ->
+            selectedTask = task
+            view.showContextMenu()
+        }
+        recyclerView.adapter = deletedTaskAdapter
+
+        registerForContextMenu(recyclerView)
     }
 }

@@ -2,6 +2,7 @@ package com.example.personaltasks.ui
 
 import android.os.Bundle
 import android.view.ContextMenu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 
@@ -68,5 +69,27 @@ class DeletedTasksActivity: AppCompatActivity() {
     override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
         super.onCreateContextMenu(menu, v, menuInfo)
         menuInflater.inflate(R.menu.deleted_task_context_menu, menu)
+    }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_reactivate_task -> {
+                selectedTask?.let { reactivateTask(it) }
+                true
+            }
+            R.id.menu_details -> {
+                selectedTask?.let { showTaskDetails(it) }
+                true
+            }
+            else -> super.onContextItemSelected(item)
+        }
+    }
+
+    private fun reactivateTask(task: Task) {
+        TODO("Not yet implemented")
+    }
+
+    private fun showTaskDetails(task: Task) {
+        TODO("Not yet implemented")
     }
 }

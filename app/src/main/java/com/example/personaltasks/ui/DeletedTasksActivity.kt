@@ -65,13 +65,16 @@ class DeletedTasksActivity: AppCompatActivity() {
         tasksCollection
             .whereEqualTo("userId", userId)
             .whereEqualTo("deleted", true)
-            .get()
-            .addOnSuccessListener { documents ->
-                val taskList = documents.toObjects(Task::class.java)
-                deletedTaskAdapter.updateTasks(taskList)
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Error to fetch tasks: ${e.message}", Toast.LENGTH_SHORT).show()
+            .addSnapshotListener { snapshots, error ->
+                if (error != null) {
+                    Toast.makeText(this, "Error to fetch tasks: ${error.message}", Toast.LENGTH_SHORT).show()
+                    return@addSnapshotListener
+                }
+
+                if (snapshots != null) {
+                    val taskList = snapshots.toObjects(Task::class.java)
+                    deletedTaskAdapter.updateTasks(taskList)
+                }
             }
     }
 
@@ -100,7 +103,6 @@ class DeletedTasksActivity: AppCompatActivity() {
                 .update("deleted", false)
                 .addOnSuccessListener {
                     Toast.makeText(this, "Task got reactivated!", Toast.LENGTH_SHORT).show()
-                    fetchDeletedTasks()
                 }
         }
     }

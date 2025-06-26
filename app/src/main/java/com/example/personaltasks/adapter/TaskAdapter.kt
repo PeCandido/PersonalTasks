@@ -1,5 +1,6 @@
 package com.example.personaltasks.adapter
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +20,7 @@ class TaskAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         // Associa os dados da tarefa às views do layout
+        @SuppressLint("SetTextI18n")
         fun bind(task: Task) {
             binding.taskTitle.text = task.title // Define o título da tarefa
             binding.taskDescription.text = task.description // Define a descrição da tarefa
@@ -53,6 +55,7 @@ class TaskAdapter(
     override fun getItemCount(): Int = tasks.size
 
     // Atualiza a lista de tarefas e notifica o RecyclerView para redesenhar os itens
+    @SuppressLint("NotifyDataSetChanged")
     fun updateTasks(newTasks: List<Task>) {
         tasks = newTasks // Substitui a lista antiga pela nova
         notifyDataSetChanged() // Notifica o RecyclerView que os dados foram alterados

@@ -6,15 +6,16 @@ import android.view.ContextMenu
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.personaltasks.adapter.TaskAdapter
-import com.example.personaltasks.data.AppDatabase
 import com.example.personaltasks.model.Task
 import com.example.personaltasks.R
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -25,14 +26,13 @@ class MainActivity : AppCompatActivity() {
     // Componentes da interface
     private lateinit var recyclerView: RecyclerView      // Lista de tarefas
     private lateinit var taskAdapter: TaskAdapter        // Adaptador para exibir tarefas no RecyclerView
-    private lateinit var db: AppDatabase                 // Instância do banco de dados
     private var tasks: List<Task> = listOf()             // Lista de tarefas carregadas
     private var selectedTask: Task? = null               // Tarefa selecionada (para o menu de contexto)
 
-    // DAO da tabela Task, inicializado de forma preguiçosa (lazy)
-    private val taskDao by lazy {
-        AppDatabase.getDatabase(this).taskDAO()
-    }
+    private val firestore = FirebaseFirestore.getInstance()
+    private val auth = FirebaseAuth.getInstance()
+
+    private val tasksCollection = firestore.collection("tasks")
 
     // Função executada quando a Activity é criada
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,9 +50,6 @@ class MainActivity : AppCompatActivity() {
         // Habilita o menu de contexto (ao segurar sobre uma tarefa)
         registerForContextMenu(recyclerView)
 
-        // Inicializa o banco de dados
-        db = AppDatabase.getDatabase(this)
-
         // Inicializa o adaptador da lista, com callback para clique longo (context menu)
         taskAdapter = TaskAdapter(tasks) { view, task ->
             selectedTask = task         // Armazena a tarefa selecionada
@@ -68,14 +65,21 @@ class MainActivity : AppCompatActivity() {
 
     // Carrega todas as tarefas do banco e atualiza o RecyclerView
     private fun loadTasks() {
-        lifecycleScope.launch {
-            val taskList = withContext(Dispatchers.IO) {
-                db.taskDAO().findAll()  // Busca no banco em thread de I/O
-            }
+        val userId = auth.currentUser?.uid ?: return
 
-            tasks = taskList               // Atualiza a lista interna
-            taskAdapter.updateTasks(tasks) // Atualiza o adaptador
-        }
+        tasksCollection
+            .whereEqualTo("userId", userId)
+            .whereEqualTo("deleted", false)
+            .addSnapshotListener { snapshots, error ->
+                if (error != null) {
+                    return@addSnapshotListener
+                }
+
+                if (snapshots != null) {
+                    val taskList = snapshots.toObjects(Task::class.java)
+                    taskAdapter.updateTasks(taskList)
+                }
+            }
     }
 
     // Infla o menu superior (toolbar)
@@ -159,11 +163,5 @@ class MainActivity : AppCompatActivity() {
     ) {
         super.onCreateContextMenu(menu, v, menuInfo)
         menuInflater.inflate(R.menu.context_menu, menu) // Infla o menu com opções de editar/remover/ver
-    }
-
-    // Sempre que a tela voltar a ficar visível (ex: após voltar do formulário), recarrega as tarefas
-    override fun onResume() {
-        super.onResume()
-        loadTasks() // Garante que a lista esteja sempre atualizada
     }
 }

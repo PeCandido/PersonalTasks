@@ -159,6 +159,8 @@ class TaskFormActivity : AppCompatActivity() {
                     Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
         }
+
+        finish()
     }
 
     // Exibe o seletor de data (DatePicker)

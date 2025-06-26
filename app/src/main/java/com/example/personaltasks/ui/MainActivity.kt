@@ -124,12 +124,12 @@ class MainActivity : AppCompatActivity() {
 
     // Remove a tarefa do banco de dados
     private fun deleteTask(task: Task) {
-        lifecycleScope.launch {
-            withContext(Dispatchers.IO) {
-                db.taskDAO().delete(task) // Deleta no banco
-            }
-
-            loadTasks() // Atualiza a lista na tela
+        task.id?.let { taskId ->
+            tasksCollection.document(taskId)
+                .update("deleted", true)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Task removed", Toast.LENGTH_SHORT).show()
+                }
         }
     }
 

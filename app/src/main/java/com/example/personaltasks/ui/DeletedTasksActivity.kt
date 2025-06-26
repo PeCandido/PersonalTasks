@@ -86,7 +86,14 @@ class DeletedTasksActivity: AppCompatActivity() {
     }
 
     private fun reactivateTask(task: Task) {
-        TODO("Not yet implemented")
+        task.id?.let { taskId ->
+            tasksCollection.document(taskId)
+                .update("deleted", false)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Task got reactivated!", Toast.LENGTH_SHORT).show()
+                    fetchDeletedTasks()
+                }
+        }
     }
 
     private fun showTaskDetails(task: Task) {

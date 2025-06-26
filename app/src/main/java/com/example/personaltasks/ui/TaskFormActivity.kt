@@ -107,10 +107,16 @@ class TaskFormActivity : AppCompatActivity() {
     // Função responsável por salvar ou atualizar a tarefa
     private fun saveTask() {
         // Obtém os valores dos campos
-        val title = titleEdit.text.toString()
-        val description = descriptionEdit.text.toString()
+        val title = titleEdit.text.toString().trim()
+        val description = descriptionEdit.text.toString().trim()
         val deadline = dateEdit.text.toString()
-        var isTaskDone = isDoneCB.isChecked
+        val isTaskDone = isDoneCB.isChecked
+
+        val userId = auth.currentUser?.uid
+        if (userId == null) {
+            Toast.makeText(this, "Error: No users logged in.", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         // Valida se todos os campos foram preenchidos
         if (title.isBlank() || description.isBlank() || deadline.isBlank()) {
@@ -120,7 +126,7 @@ class TaskFormActivity : AppCompatActivity() {
         }
 
         // Feedback ao usuário avisando que a tarefa foi salva
-        Toast.makeText(this, "Salvando tarefa...", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Saving task...", Toast.LENGTH_SHORT).show()
 
         // Cria uma nova tarefa ou atualiza a existente
         val taskToSave = Task(

@@ -3,8 +3,10 @@ package com.example.personaltasks.ui
 import android.content.Intent
 import android.os.Bundle
 import android.view.ContextMenu
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageButton
 import android.widget.Toast
 
 import androidx.appcompat.app.AppCompatActivity
@@ -32,7 +34,13 @@ class DeletedTasksActivity: AppCompatActivity() {
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar_deleted)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        val closeButton = findViewById<ImageButton>(R.id.close_button)
+
+        // Defina o que acontece ao clicar nele
+        closeButton.setOnClickListener {
+            finish() // Fecha a activity
+        }
 
         setupRecyclerView()
         fetchDeletedTasks()

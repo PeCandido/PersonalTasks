@@ -105,6 +105,12 @@ class MainActivity : AppCompatActivity() {
                 finish()
                 true
             }
+
+            R.id.action_deleted_tasks -> {
+                startActivity(Intent(this, DeletedTasksActivity::class.java))
+                true
+            }
+
             else -> super.onOptionsItemSelected(item)
         }
     }

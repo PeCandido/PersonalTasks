@@ -11,4 +11,10 @@
         android:id="@+id/action_logout"
         android:title="Exit"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_deleted_tasks"
+        android:title="Trash"
+        android:icon="@android:drawable/ic_menu_delete"
+        app:showAsAction="ifRoom" />
 </menu>

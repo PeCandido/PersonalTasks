@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.personaltasks.adapter.TaskAdapter
@@ -40,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main) // Define o layout da tela
 
         // Configura a toolbar personalizada
-        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
         // Inicializa o RecyclerView e define seu layout como uma lista vertical

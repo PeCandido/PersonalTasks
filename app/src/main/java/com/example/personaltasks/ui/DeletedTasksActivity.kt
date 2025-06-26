@@ -1,6 +1,8 @@
 package com.example.personaltasks.ui
 
 import android.os.Bundle
+import android.view.ContextMenu
+import android.view.View
 import android.widget.Toast
 
 import androidx.appcompat.app.AppCompatActivity
@@ -61,5 +63,10 @@ class DeletedTasksActivity: AppCompatActivity() {
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Error to fetch tasks: ${e.message}", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        menuInflater.inflate(R.menu.deleted_task_context_menu, menu)
     }
 }

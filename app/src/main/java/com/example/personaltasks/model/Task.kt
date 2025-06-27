@@ -2,13 +2,18 @@ package com.example.personaltasks.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.firebase.firestore.DocumentId
 
-// Tabela no banco de dados que armazena as tarefas
-@Entity(tableName = "tasks")
-class Task (
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val title: String,
-    val description: String,
-    val deadline: String,
-    val isDone: Boolean
-)
+data class Task(
+    // Tag Firebase que indica atributo ID da classe
+    @DocumentId
+    var id: String? = null,
+    var userId: String? = null,
+    var title: String = "",
+    var description: String = "",
+    var deadline: String = "",
+    var isDone: Boolean = false,
+    var isDeleted: Boolean = false
+) {
+    constructor() : this(null, null, "", "", "", false, false)
+}

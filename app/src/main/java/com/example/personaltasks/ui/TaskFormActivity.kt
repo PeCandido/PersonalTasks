@@ -10,9 +10,10 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.personaltasks.data.AppDatabase
 import com.example.personaltasks.model.Task
 import com.example.personaltasks.R
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -32,15 +33,18 @@ class TaskFormActivity : AppCompatActivity() {
     private lateinit var isDoneCB: CheckBox
 
     // Armazena o ID da tarefa, se for uma edição
-    private var taskId: Int = 0
+    private var taskId: String? = null
     // Indica se o formulário está em modo somente leitura (detalhamento da tarefa)
     private var isReadOnly: Boolean = false
     // Define o formato da data exibida no campo
     private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     // Instância de calendário usada no seletor de datas
     private val calendar = Calendar.getInstance()
-    // Instância do banco de dados
-    private lateinit var db: AppDatabase
+
+    // Instância do Firebase
+    private val firestore = FirebaseFirestore.getInstance()
+    private val auth = FirebaseAuth.getInstance()
+    private val tasksCollection = firestore.collection("tasks")
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,9 +59,6 @@ class TaskFormActivity : AppCompatActivity() {
         saveButton = findViewById(R.id.save_btn)
         cancelButton = findViewById(R.id.cancel_btn)
         isDoneCB = findViewById(R.id.isDone_checkbox)
-
-        // Inicializa a instância do banco de dados
-        db = AppDatabase.getDatabase(this)
 
         // Desabilita o teclado na edição da data
         dateEdit.setKeyListener(null)
@@ -81,10 +82,10 @@ class TaskFormActivity : AppCompatActivity() {
         }
 
         // Obtém o ID da tarefa passada via Intent (0 se for nova)
-        taskId = intent.getIntExtra("task_id", 0)
+        taskId = intent.getStringExtra("task_id")
 
         // Se for edição ou visualização, carrega os dados da tarefa do banco
-        if (taskId != 0) {
+        if (taskId != null) {
             loadTask()
         }
 
@@ -107,10 +108,17 @@ class TaskFormActivity : AppCompatActivity() {
     // Função responsável por salvar ou atualizar a tarefa
     private fun saveTask() {
         // Obtém os valores dos campos
-        val title = titleEdit.text.toString()
-        val description = descriptionEdit.text.toString()
+        val title = titleEdit.text.toString().trim()
+        val description = descriptionEdit.text.toString().trim()
         val deadline = dateEdit.text.toString()
-        var isTaskDone = isDoneCB.isChecked
+        val isTaskDone = isDoneCB.isChecked
+
+        // Verifica se tem um usuário logado
+        val userId = auth.currentUser?.uid
+        if (userId == null) {
+            Toast.makeText(this, "Error: No users logged in.", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         // Valida se todos os campos foram preenchidos
         if (title.isBlank() || description.isBlank() || deadline.isBlank()) {
@@ -120,35 +128,44 @@ class TaskFormActivity : AppCompatActivity() {
         }
 
         // Feedback ao usuário avisando que a tarefa foi salva
-        Toast.makeText(this, "Salvando tarefa...", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Saving task...", Toast.LENGTH_SHORT).show()
 
         // Cria uma nova tarefa ou atualiza a existente
-        val newTask = if (taskId != 0) {
-            Task(
-                id = taskId,
-                title = title,
-                description = description,
-                deadline = deadline,
-                isDone = isTaskDone
-            )
+        val taskToSave = Task(
+            id = taskId, // Será nulo se for uma nova tarefa
+            userId = userId,
+            title = title,
+            description = description,
+            deadline = deadline,
+            isDone = isTaskDone,
+            isDeleted = false
+        )
+
+        // Cria uma nova tarefa quando o ID é nulo
+        if (taskId == null) {
+            tasksCollection.add(taskToSave)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Created new task!", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
         } else {
-            Task(
-                title = title,
-                description = description,
-                deadline = deadline,
-                isDone = isTaskDone
-            )
+            // Faz atualização da tarefa
+            tasksCollection.document(taskId!!)
+                .set(taskToSave)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Task has been updated!", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
         }
 
-        // Executa a operação de banco de dados de forma assíncrona
-        lifecycleScope.launch {
-            if (taskId != 0) {
-                db.taskDAO().update(newTask) // Atualiza a tarefa existente
-            } else {
-                db.taskDAO().insert(newTask) // Insere uma nova tarefa
-            }
-            finish() // Fecha a activity após salvar
-        }
+        // Encerra activity
+        finish()
     }
 
     // Exibe o seletor de data (DatePicker)
@@ -175,18 +192,15 @@ class TaskFormActivity : AppCompatActivity() {
 
     // Carrega a tarefa do banco com base no ID recebido
     private fun loadTask() {
-        lifecycleScope.launch {
-            val task = withContext(Dispatchers.IO) {
-                db.taskDAO().findById(taskId)
-            }
-
-            // Se a tarefa existir, preenche os campos com seus dados
-            // Preenche se a tarefa está concluída ou não
-            task?.let {
-                titleEdit.setText(it.title)
-                descriptionEdit.setText(it.description)
-                dateEdit.setText(it.deadline)
-                isDoneCB.isChecked = it.isDone
+        taskId?.let { id ->
+            tasksCollection.document(id).get().addOnSuccessListener { document ->
+                val task = document.toObject(Task::class.java)
+                task?.let {
+                    titleEdit.setText(it.title)
+                    descriptionEdit.setText(it.description)
+                    dateEdit.setText(it.deadline)
+                    isDoneCB.isChecked = it.isDone
+                }
             }
         }
     }

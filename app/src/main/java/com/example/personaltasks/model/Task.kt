@@ -5,6 +5,7 @@ import androidx.room.PrimaryKey
 import com.google.firebase.firestore.DocumentId
 
 data class Task(
+    // Tag Firebase que indica atributo ID da classe
     @DocumentId
     var id: String? = null,
     var userId: String? = null,

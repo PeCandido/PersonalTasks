@@ -27,6 +27,7 @@ class TaskAdapter(
             binding.taskDate.text = "Deadline: ${task.deadline}" // Define a data limite da tarefa
             binding.isDone.isChecked = task.isDone
             binding.isDone.isClickable = false
+            binding.priorityText.text = task.priority.toString()
 
             // Define o que acontece ao clicar e segurar uma tarefa
             binding.root.setOnLongClickListener {

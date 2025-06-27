@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
@@ -9,7 +10,7 @@
 
         <TextView
             android:id="@+id/task_title"
-            android:layout_width="match_parent"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:text="@string/task_title"
             android:textStyle="bold"
@@ -44,7 +45,18 @@
             android:id="@+id/is_done"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Task is done"
+            android:text="@string/task_is_done"
             card_view:layout_constraintTop_toBottomOf="@id/task_date" />
+
+        <TextView
+            android:id="@+id/priority_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="84dp"
+            android:text="priority"
+            android:textColor="@color/black"
+            card_view:layout_constraintLeft_toRightOf="@id/task_title"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteY="5dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

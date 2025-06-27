@@ -1,7 +1,6 @@
 package com.example.personaltasks.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import com.example.personaltasks.enum.Priority
 import com.google.firebase.firestore.DocumentId
 
 data class Task(
@@ -13,7 +12,8 @@ data class Task(
     var description: String = "",
     var deadline: String = "",
     var isDone: Boolean = false,
-    var isDeleted: Boolean = false
+    var isDeleted: Boolean = false,
+    var priority: Priority? = null
 ) {
-    constructor() : this(null, null, "", "", "", false, false)
+    constructor() : this(null, null, "", "", "", false, false, null)
 }

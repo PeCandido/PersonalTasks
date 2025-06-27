@@ -7,16 +7,14 @@ import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import com.example.personaltasks.model.Task
 import com.example.personaltasks.R
+import com.example.personaltasks.enum.Priority
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -31,6 +29,7 @@ class TaskFormActivity : AppCompatActivity() {
     private lateinit var saveButton: Button
     private lateinit var cancelButton: Button
     private lateinit var isDoneCB: CheckBox
+    private lateinit var prioritySpinner: Spinner
 
     // Armazena o ID da tarefa, se for uma edição
     private var taskId: String? = null
@@ -59,6 +58,7 @@ class TaskFormActivity : AppCompatActivity() {
         saveButton = findViewById(R.id.save_btn)
         cancelButton = findViewById(R.id.cancel_btn)
         isDoneCB = findViewById(R.id.isDone_checkbox)
+        prioritySpinner = findViewById(R.id.priority_spinner)
 
         // Desabilita o teclado na edição da data
         dateEdit.setKeyListener(null)
@@ -112,6 +112,7 @@ class TaskFormActivity : AppCompatActivity() {
         val description = descriptionEdit.text.toString().trim()
         val deadline = dateEdit.text.toString()
         val isTaskDone = isDoneCB.isChecked
+        val priority = getPriority(prioritySpinner.selectedItem.toString())
 
         // Verifica se tem um usuário logado
         val userId = auth.currentUser?.uid
@@ -138,7 +139,8 @@ class TaskFormActivity : AppCompatActivity() {
             description = description,
             deadline = deadline,
             isDone = isTaskDone,
-            isDeleted = false
+            isDeleted = false,
+            priority = priority
         )
 
         // Cria uma nova tarefa quando o ID é nulo
@@ -166,6 +168,12 @@ class TaskFormActivity : AppCompatActivity() {
 
         // Encerra activity
         finish()
+    }
+
+    private fun getPriority(priority: String): Priority {
+        if(priority == "Medium") return Priority.MEDIUM
+        if(priority == "High") return Priority.HIGH
+        return Priority.LOW
     }
 
     // Exibe o seletor de data (DatePicker)

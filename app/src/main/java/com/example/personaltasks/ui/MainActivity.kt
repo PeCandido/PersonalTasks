@@ -30,9 +30,9 @@ class MainActivity : AppCompatActivity() {
     private var tasks: List<Task> = listOf()             // Lista de tarefas carregadas
     private var selectedTask: Task? = null               // Tarefa selecionada (para o menu de contexto)
 
+    // Intância do firebase
     private val firestore = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
-
     private val tasksCollection = firestore.collection("tasks")
 
     // Função executada quando a Activity é criada
@@ -69,8 +69,8 @@ class MainActivity : AppCompatActivity() {
         val userId = auth.currentUser?.uid ?: return
 
         tasksCollection
-            .whereEqualTo("userId", userId)
-            .whereEqualTo("deleted", false)
+            .whereEqualTo("userId", userId)        // verifica o ID da task
+            .whereEqualTo("deleted", false)  // verifica se ela foi deletada ou não
             .addSnapshotListener { snapshots, error ->
                 if (error != null) {
                     return@addSnapshotListener
@@ -98,8 +98,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             R.id.action_logout -> {
-                FirebaseAuth.getInstance().signOut()
-                val intent = Intent(this, LoginActivity::class.java)
+                FirebaseAuth.getInstance().signOut()    // faz log out do usuário
+                val intent = Intent(this, LoginActivity::class.java)  // Intent explícita que chama a tela de Login
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
                 finish()
@@ -107,6 +107,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             R.id.action_deleted_tasks -> {
+                // Intent que chama a tela de tarefas deletadas
                 startActivity(Intent(this, DeletedTasksActivity::class.java))
                 true
             }

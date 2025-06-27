@@ -6,4 +6,8 @@
     <item
         android:id="@+id/menu_details"
         android:title="@string/details_deleted_task" />
+
+    <item
+        android:id="@+id/menu_remove_permanently"
+        android:title="Delete Permanently" />
 </menu>

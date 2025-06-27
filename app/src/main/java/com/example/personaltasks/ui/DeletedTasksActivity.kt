@@ -102,7 +102,22 @@ class DeletedTasksActivity: AppCompatActivity() {
                 selectedTask?.let { showTaskDetails(it) }
                 true
             }
+            R.id.menu_remove_permanently -> {
+                selectedTask?.let { deleteTaskPermanently(it) }
+                true
+            }
             else -> super.onContextItemSelected(item)
+        }
+    }
+
+
+    private fun deleteTaskPermanently(task: Task) {
+        task.id?.let { taskId ->
+            tasksCollection.document(taskId)
+                .delete()
+                .addOnCompleteListener {
+                    Toast.makeText(this, "Task permanently removed", Toast.LENGTH_SHORT).show()
+                }
         }
     }
 

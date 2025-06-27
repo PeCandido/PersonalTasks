@@ -41,6 +41,7 @@ class TaskFormActivity : AppCompatActivity() {
     // Instância de calendário usada no seletor de datas
     private val calendar = Calendar.getInstance()
 
+    // Instância do Firebase
     private val firestore = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
     private val tasksCollection = firestore.collection("tasks")
@@ -112,6 +113,7 @@ class TaskFormActivity : AppCompatActivity() {
         val deadline = dateEdit.text.toString()
         val isTaskDone = isDoneCB.isChecked
 
+        // Verifica se tem um usuário logado
         val userId = auth.currentUser?.uid
         if (userId == null) {
             Toast.makeText(this, "Error: No users logged in.", Toast.LENGTH_SHORT).show()
@@ -139,6 +141,7 @@ class TaskFormActivity : AppCompatActivity() {
             isDeleted = false
         )
 
+        // Cria uma nova tarefa quando o ID é nulo
         if (taskId == null) {
             tasksCollection.add(taskToSave)
                 .addOnSuccessListener {
@@ -149,6 +152,7 @@ class TaskFormActivity : AppCompatActivity() {
                     Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
         } else {
+            // Faz atualização da tarefa
             tasksCollection.document(taskId!!)
                 .set(taskToSave)
                 .addOnSuccessListener {
@@ -160,6 +164,7 @@ class TaskFormActivity : AppCompatActivity() {
                 }
         }
 
+        // Encerra activity
         finish()
     }
 

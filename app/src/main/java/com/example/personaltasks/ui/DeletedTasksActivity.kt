@@ -24,6 +24,7 @@ class DeletedTasksActivity: AppCompatActivity() {
     private lateinit var deletedTaskAdapter: TaskAdapter
     private var selectedTask: Task? = null
 
+    // Instância do Firebase
     private val firestore = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
     private val tasksCollection = firestore.collection("tasks")
@@ -32,6 +33,7 @@ class DeletedTasksActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_deleted_tasks)
 
+        // Instancia UI
         val toolbar = findViewById<Toolbar>(R.id.toolbar_deleted)
         setSupportActionBar(toolbar)
 
@@ -42,14 +44,19 @@ class DeletedTasksActivity: AppCompatActivity() {
             finish() // Fecha a activity
         }
 
+        // Inicia a RecyclerView
         setupRecyclerView()
+
+        // Coloca as tarefas deletadas na tela
         fetchDeletedTasks()
     }
 
     private fun setupRecyclerView() {
+        // Chama a recyclerView
         recyclerView = findViewById(R.id.rv_deleted_tasks)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
+        // Adapter que mostra o menu de contexto da tarefa
         deletedTaskAdapter = TaskAdapter(mutableListOf()) { view, task ->
             selectedTask = task
             view.showContextMenu()
@@ -60,12 +67,13 @@ class DeletedTasksActivity: AppCompatActivity() {
     }
 
     private fun fetchDeletedTasks() {
+        // Verifica se usuário está logado
         val userId = auth.currentUser?.uid ?: return
 
         tasksCollection
             .whereEqualTo("userId", userId)
             .whereEqualTo("deleted", true)
-            .addSnapshotListener { snapshots, error ->
+            .addSnapshotListener { snapshots, error ->  // Lista as tarefas deletadas dinamicamente
                 if (error != null) {
                     Toast.makeText(this, "Error to fetch tasks: ${error.message}", Toast.LENGTH_SHORT).show()
                     return@addSnapshotListener
@@ -78,6 +86,7 @@ class DeletedTasksActivity: AppCompatActivity() {
             }
     }
 
+    // Chama o menu de contexto
     override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
         super.onCreateContextMenu(menu, v, menuInfo)
         menuInflater.inflate(R.menu.deleted_task_context_menu, menu)
@@ -85,11 +94,11 @@ class DeletedTasksActivity: AppCompatActivity() {
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.menu_reactivate_task -> {
+            R.id.menu_reactivate_task -> {  // Reativa a tarefa
                 selectedTask?.let { reactivateTask(it) }
                 true
             }
-            R.id.menu_details -> {
+            R.id.menu_details -> {  // Encaminha para os detalhes da tarefa
                 selectedTask?.let { showTaskDetails(it) }
                 true
             }
@@ -97,16 +106,19 @@ class DeletedTasksActivity: AppCompatActivity() {
         }
     }
 
+
+    // Reativa a tarefa
     private fun reactivateTask(task: Task) {
         task.id?.let { taskId ->
             tasksCollection.document(taskId)
-                .update("deleted", false)
+                .update("deleted", false)  // atualiza o atributo "isDone" da tarefa para true
                 .addOnSuccessListener {
                     Toast.makeText(this, "Task got reactivated!", Toast.LENGTH_SHORT).show()
                 }
         }
     }
 
+    // Abre a activity de detalhe da tarefa
     private fun showTaskDetails(task: Task) {
         val intent = Intent(this, TaskFormActivity::class.java).apply {
             putExtra("task_id", task.id)
